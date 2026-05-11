@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>SIMPER v2.0 - Final UTS Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .nav-link.active { background: #2563eb; color: white; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4); }
+        .content-section { display: none; animation: slideUp 0.4s ease-out forwards; }
+        .content-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #loader { position: fixed; inset: 0; background: white; z-index: 100; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="flex h-screen">
+
+    <div id="loader"><div class="w-12 h-12 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div></div>
+
+    <aside class="w-72 bg-slate-900 text-white flex flex-col p-6 shadow-2xl z-20">
+        <div class="flex items-center gap-4 mb-10 px-2">
+            <div class="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-500/40"><i class="fas fa-microchip text-xl"></i></div>
+            <h1 class="font-black text-xl tracking-tight uppercase">SIMPER</h1>
+        </div>
+
+        <nav class="flex-1 space-y-1 overflow-y-auto pr-2">
+            <button onclick="App.nav('dashboard')" id="btn-dashboard" class="nav-link active w-full flex items-center gap-3 p-3.5 rounded-xl transition-all text-sm font-semibold"><i class="fas fa-th-large w-5"></i> Dashboard</button>
+            <button onclick="App.nav('model')" id="btn-model" class="nav-link w-full flex items-center gap-3 p-3.5 text-slate-400 hover:text-white rounded-xl transition-all text-sm font-semibold"><i class="fas fa-square-root-alt w-5"></i> Model Matematis</button>
+            <button onclick="App.nav('simulasi')" id="btn-simulasi" class="nav-link w-full flex items-center gap-3 p-3.5 text-slate-400 hover:text-white rounded-xl transition-all text-sm font-semibold"><i class="fas fa-vial w-5"></i> Simulasi Model</button>
+            <button onclick="App.nav('perilaku')" id="btn-perilaku" class="nav-link w-full flex items-center gap-3 p-3.5 text-slate-400 hover:text-white rounded-xl transition-all text-sm font-semibold"><i class="fas fa-users w-5"></i> Analisis Perilaku</button>
+            <button onclick="App.nav('keputusan')" id="btn-keputusan" class="nav-link w-full flex items-center gap-3 p-3.5 text-slate-400 hover:text-white rounded-xl transition-all text-sm font-semibold"><i class="fas fa-balance-scale w-5"></i> Pendukung Keputusan</button>
+            <button onclick="App.nav('laporan')" id="btn-laporan" class="nav-link w-full flex items-center gap-3 p-3.5 text-slate-400 hover:text-white rounded-xl transition-all text-sm font-semibold"><i class="fas fa-file-invoice w-5"></i> Laporan Strategis</button>
+            <div class="pt-4 border-t border-slate-800 mt-4">
+                <button onclick="App.nav('profil')" id="btn-profil" class="nav-link w-full flex items-center gap-3 p-3.5 text-slate-400 hover:text-white rounded-xl transition-all text-sm font-semibold"><i class="fas fa-user-cog w-5"></i> Setting Profil</button>
+            </div>
+        </nav>
+        
+        <button onclick="window.location.href='login.html'" class="mt-4 flex items-center justify-center gap-2 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all font-bold text-sm"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        
+        <section id="dashboard" class="content-section active">
+            <header class="mb-10"><h2 class="text-4xl font-black text-slate-800 tracking-tighter">Dashboard</h2><p class="text-slate-500 font-medium">Real-time Managerial Performance Summary</p></header>
+            <div class="grid grid-cols-4 gap-6 mb-10">
+                <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-slate-100 relative overflow-hidden">
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Total Analisis</p>
+                    <h3 class="text-3xl font-black text-slate-800" id="stat-count">0</h3>
+                    <i class="fas fa-database absolute -right-4 -bottom-4 text-6xl text-slate-50 opacity-50"></i>
+                </div>
+                <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-slate-100"><p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2 text-blue-600">Efektivitas</p><h3 class="text-3xl font-black text-blue-600">92.4%</h3></div>
+                <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-slate-100"><p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2 text-orange-500">Akurasi Model</p><h3 class="text-3xl font-black text-orange-500">94.8%</h3></div>
+                <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-slate-100"><p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2 text-green-600">Staff Terdata</p><h3 class="text-3xl font-black text-green-600">42</h3></div>
+            </div>
+            <div class="bg-white p-8 rounded-[3rem] border shadow-sm"><canvas id="mainChart" height="110"></canvas></div>
+        </section>
+
+        <section id="model" class="content-section">
+            <h2 class="text-3xl font-black text-slate-800 mb-8">Model Matematis & Variabel</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-blue-600 p-12 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
+                    <h4 class="font-bold mb-6 uppercase text-xs tracking-[0.3em] opacity-70">Multiple Linear Regression</h4>
+                    <p class="text-5xl font-mono mb-8 tracking-tighter">Y = 0.6(X₁) + 0.4(X₂) + ε</p>
+                    <div class="space-y-3 text-sm font-medium opacity-90">
+                        <p><i class="fas fa-check-circle mr-2"></i> <strong>X1:</strong> Leadership & Proactivity Index</p>
+                        <p><i class="fas fa-check-circle mr-2"></i> <strong>X2:</strong> Interpersonal Communication Index</p>
+                        <p><i class="fas fa-check-circle mr-2"></i> <strong>ε:</strong> Residual Variable (External Factors)</p>
+                    </div>
+                </div>
+                <div class="bg-white p-10 rounded-[3rem] border shadow-sm flex flex-col justify-center">
+                    <h4 class="font-black text-slate-800 mb-4 text-xl">Landasan Teori</h4>
+                    <p class="text-slate-500 leading-relaxed text-sm italic">"Model ini mengasumsikan bahwa 60% efektivitas manajerial ditentukan oleh keberanian mengambil keputusan (X1), sementara 40% ditentukan oleh bagaimana keputusan tersebut dikomunikasikan kepada tim (X2)."</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulasi" class="content-section">
+            <h2 class="text-3xl font-black text-slate-800 mb-8 tracking-tighter">Simulator Prediksi Perilaku</h2>
+            <div class="grid grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-sm space-y-8">
+                    <div>
+                        <div class="flex justify-between mb-3"><label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Leadership Score (X1)</label><span id="lX1" class="text-xs font-black text-blue-600">50</span></div>
+                        <input type="range" id="iX1" oninput="App.calculate()" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-3"><label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Communication Score (X2)</label><span id="lX2" class="text-xs font-black text-blue-600">50</span></div>
+                        <input type="range" id="iX2" oninput="App.calculate()" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    </div>
+                </div>
+                <div class="col-span-2 bg-slate-900 p-10 rounded-[3rem] text-white flex flex-col justify-center items-center shadow-2xl relative overflow-hidden">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.3em] opacity-40 mb-2">Predicted Efficiency (Y)</p>
+                    <div class="text-9xl font-black tracking-tighter"><span id="rY">50.0</span><span class="text-3xl text-blue-500 ml-2">%</span></div>
+                    <div id="badgeSim" class="mt-8 px-8 py-2.5 bg-blue-600 rounded-full text-xs font-black uppercase tracking-widest">Balanced Performance</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="perilaku" class="content-section">
+            <header class="mb-10 flex justify-between items-end">
+                <div><h2 class="text-3xl font-black text-slate-800">Master Data Analisis</h2><p class="text-slate-500 font-medium italic">Dataset Perilaku Manajerial Staff</p></div>
+                <button onclick="App.modal(true)" class="bg-blue-600 text-white px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-500/30 flex items-center gap-3 transition-all active:scale-95">
+                    <i class="fas fa-plus-circle"></i> Input Staff Baru
+                </button>
+            </header>
+            <div class="bg-white rounded-[3rem] overflow-hidden border shadow-sm">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                        <tr><th class="p-7">Nama Manajer</th><th class="p-7">X1 (Lead)</th><th class="p-7">X2 (Comm)</th><th class="p-7">Y (Eff Score)</th><th class="p-7">Status Evaluasi</th></tr>
+                    </thead>
+                    <tbody id="tableBody" class="text-sm font-medium">
+                        <tr class="border-t"><td class="p-7 font-bold text-blue-600 italic">Panji</td><td class="p-7">78%</td><td class="p-7">72%</td><td class="p-7 font-black">75.6%</td><td class="p-7"><span class="bg-blue-100 text-blue-600 px-5 py-2 rounded-full font-black text-[10px]">STRONG</span></td></tr>
+                        <tr class="border-t"><td class="p-7 font-bold text-blue-600 italic">Alvin</td><td class="p-7">91%</td><td class="p-7">88%</td><td class="p-7 font-black">89.8%</td><td class="p-7"><span class="bg-green-100 text-green-600 px-5 py-2 rounded-full font-black text-[10px]">SUPERIOR</span></td></tr>
+                        <tr class="border-t"><td class="p-7 font-bold text-blue-600 italic">Desi</td><td class="p-7">84%</td><td class="p-7">80%</td><td class="p-7 font-black">82.4%</td><td class="p-7"><span class="bg-purple-100 text-purple-600 px-5 py-2 rounded-full font-black text-[10px]">OPTIMAL</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="keputusan" class="content-section">
+            <h2 class="text-3xl font-black text-slate-800 mb-8">Decision Support System</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-[2.5rem] border-l-[12px] border-l-green-500 shadow-sm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-trophy"></i></div>
+                        <h4 class="font-black text-slate-800">Prioritas Promosi</h4>
+                    </div>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">Berdasarkan kalkulasi model matematis, staff bernama <strong>Alvin</strong> memiliki indeks stabilitas tertinggi (89.8%). Sistem merekomendasikan promosi ke level Senior Management.</p>
+                    <span class="text-[10px] font-black bg-green-50 text-green-600 px-3 py-1 rounded-md uppercase">Confidence Level: 96%</span>
+                </div>
+                <div class="bg-white p-8 rounded-[2.5rem] border-l-[12px] border-l-orange-400 shadow-sm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <h4 class="font-black text-slate-800">Program Intervensi</h4>
+                    </div>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">Staff bernama <strong>Panji</strong> memerlukan peningkatan pada variabel X2 (Komunikasi). Sistem menyarankan mengikuti "Executive Communication Training" pada kuartal depan.</p>
+                    <span class="text-[10px] font-black bg-orange-50 text-orange-600 px-3 py-1 rounded-md uppercase">Urgency: Medium</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="laporan" class="content-section">
+            <h2 class="text-3xl font-black text-slate-800 mb-8 tracking-tighter">Export & Reporting</h2>
+            <div class="grid grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-[2.5rem] border text-center hover:border-blue-500 transition-all cursor-pointer group">
+                    <i class="fas fa-file-pdf text-4xl text-slate-200 group-hover:text-red-500 mb-4 transition-colors"></i>
+                    <h5 class="font-black text-slate-700 text-sm mb-1 uppercase">Laporan Bulanan</h5>
+                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Format .PDF</p>
+                    <button class="w-full py-2.5 bg-slate-100 rounded-xl text-xs font-black text-slate-600 hover:bg-slate-800 hover:text-white transition-all">Download</button>
+                </div>
+                <div class="bg-white p-8 rounded-[2.5rem] border text-center hover:border-blue-500 transition-all cursor-pointer group">
+                    <i class="fas fa-file-excel text-4xl text-slate-200 group-hover:text-green-500 mb-4 transition-colors"></i>
+                    <h5 class="font-black text-slate-700 text-sm mb-1 uppercase">Dataset Mentah</h5>
+                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Format .XLSX</p>
+                    <button class="w-full py-2.5 bg-slate-100 rounded-xl text-xs font-black text-slate-600 hover:bg-slate-800 hover:text-white transition-all">Download</button>
+                </div>
+                <div class="bg-white p-8 rounded-[2.5rem] border text-center hover:border-blue-500 transition-all cursor-pointer group">
+                    <i class="fas fa-chart-pie text-4xl text-slate-200 group-hover:text-blue-500 mb-4 transition-colors"></i>
+                    <h5 class="font-black text-slate-700 text-sm mb-1 uppercase">Infografis Perilaku</h5>
+                    <p class="text-[10px] text-slate-400 mb-4 font-bold uppercase">Format .PNG</p>
+                    <button class="w-full py-2.5 bg-slate-100 rounded-xl text-xs font-black text-slate-600 hover:bg-slate-800 hover:text-white transition-all">Download</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="profil" class="content-section">
+            <h2 class="text-3xl font-black text-slate-800 mb-8">System Configuration</h2>
+            <div class="max-w-md bg-white p-10 rounded-[3rem] border shadow-sm space-y-6">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-24 h-24 bg-blue-100 rounded-[2rem] flex items-center justify-center text-4xl text-blue-600 font-black mb-4">AD</div>
+                    <p class="font-black text-slate-800">Administrator UTS</p>
+                    <p class="text-xs text-slate-400 font-bold uppercase">Level: System Analyst</p>
+                </div>
+                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Instansi</label><input type="text" value="Fakultas Teknologi Informasi" class="w-full p-4 bg-slate-50 border rounded-2xl font-bold text-sm" readonly></div>
+                <button class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 active:scale-95 transition-all">Update Security Key</button>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm rounded-[3rem] shadow-2xl p-10 animate-slideUp">
+            <h3 class="text-2xl font-black mb-2 tracking-tighter">Add Manager</h3>
+            <p class="text-slate-400 text-xs font-medium mb-8">Input data variabel perilaku manajerial baru.</p>
+            <form onsubmit="App.add(event)" class="space-y-4">
+                <input type="text" id="nM" placeholder="Nama Lengkap" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-semibold">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="nX1" placeholder="Skor X1" min="0" max="100" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-semibold">
+                    <input type="number" id="nX2" placeholder="Skor X2" min="0" max="100" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-semibold">
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="App.modal(false)" class="flex-1 bg-slate-100 py-4 rounded-2xl font-extrabold text-slate-500 uppercase text-xs tracking-widest">Batal</button>
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-extrabold uppercase text-xs tracking-widest">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const App = {
+            nav(id) {
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                document.getElementById('btn-' + id).classList.add('active');
+            },
+            modal(show) { document.getElementById('modal').classList.toggle('hidden', !show); },
+            calculate() {
+                const x1 = document.getElementById('iX1').value;
+                const x2 = document.getElementById('iX2').value;
+                document.getElementById('lX1').innerText = x1;
+                document.getElementById('lX2').innerText = x2;
+                const y = ((0.6 * x1) + (0.4 * x2)).toFixed(1);
+                document.getElementById('rY').innerText = y;
+                
+                const b = document.getElementById('badgeSim');
+                if(y >= 85) { b.innerText="Superior Level"; b.className="mt-8 px-8 py-2.5 bg-green-500 rounded-full text-xs font-black uppercase tracking-widest"; }
+                else if(y >= 70) { b.innerText="Strong Level"; b.className="mt-8 px-8 py-2.5 bg-blue-600 rounded-full text-xs font-black uppercase tracking-widest"; }
+                else { b.innerText="Developing Level"; b.className="mt-8 px-8 py-2.5 bg-orange-500 rounded-full text-xs font-black uppercase tracking-widest"; }
+            },
+            add(e) {
+                e.preventDefault();
+                const n = document.getElementById('nM').value;
+                const x1 = parseFloat(document.getElementById('nX1').value);
+                const x2 = parseFloat(document.getElementById('nX2').value);
+                const y = (0.6 * x1) + (0.4 * x2);
+                let st = "OPTIMAL", cl = "bg-purple-100 text-purple-600";
+                if(y >= 85) { st="SUPERIOR"; cl="bg-green-100 text-green-600"; }
+                else if(y >= 75) { st="STRONG"; cl="bg-blue-100 text-blue-600"; }
+                
+                const row = `<tr class="border-t animate-slideUp"><td class="p-7 font-bold text-blue-600 italic">${n}</td><td class="p-7">${x1}%</td><td class="p-7">${x2}%</td><td class="p-7 font-black">${y.toFixed(1)}%</td><td class="p-7"><span class="${cl} px-5 py-2 rounded-full font-black text-[10px] uppercase">${st}</span></td></tr>`;
+                document.getElementById('tableBody').insertAdjacentHTML('beforeend', row);
+                this.modal(false);
+                e.target.reset();
+            },
+            init() {
+                new Chart(document.getElementById('mainChart'), { 
+                    type: 'line', 
+                    data: { 
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], 
+                        datasets: [{ 
+                            data: [65, 82, 78, 94], 
+                            borderColor: '#2563eb', 
+                            tension: 0.4, 
+                            fill: true, 
+                            backgroundColor: 'rgba(37, 99, 235, 0.05)', 
+                            borderWidth: 4,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#2563eb'
+                        }] 
+                    }, 
+                    options: { 
+                        plugins: { legend: { display: false } }, 
+                        scales: { y: { display: false }, x: { grid: { display: false } } },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    } 
+                });
+                setTimeout(() => { document.getElementById('loader').style.display='none'; }, 1000);
+                this.calculate();
+                this.animStat('stat-count', 1255);
+            },
+            animStat(id, end) {
+                let start = 0;
+                const obj = document.getElementById(id);
+                const timer = setInterval(() => {
+                    start += 25;
+                    obj.innerText = start;
+                    if(start >= end) { obj.innerText = end; clearInterval(timer); }
+                }, 30);
+            }
+        };
+        window.onload = () => App.init();
+    </script>
+</body>
+</html>
